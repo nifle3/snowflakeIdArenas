@@ -1,32 +1,33 @@
-x-server-node-template:
+x-server-node-template: &x-server-node-template
   restart: always
-  build:
-    dockerfile: Dockerfile
-    context: .
-    target: final
+  image: snowflakeid_arena:latest
   networks:
     - app_network
+  depends_on:
+    etcd:
+      condition: service_healthy
 
 services:
   server_node1:
-    <<<: *x-server-node-template
+    <<: *x-server-node-template
     container_name: server_node1
     ports:
       - 50052:50051
 
   server_node2:
-    <<<: *x-server-node-template
-    container_name: server_node1
+    <<: *x-server-node-template
+    container_name: server_node2
     ports:
       - 50053:50051
 
   server_node3:
-    <<<: *x-server-node-template
-    container_name: server_node1
+    <<: *x-server-node-template
+    container_name: server_node3
     ports:
       - 50054:50051
 
   etcd:
+    image: quay.io/coreos/etcd:3.5.19
     container_name: etcd
     networks:
       - app_network

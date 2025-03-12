@@ -1,12 +1,44 @@
-# https://taskfile.dev
-
 version: '3'
 
 vars:
-  GREETING: Hello, World!
+  OUTPUT_FILE: "{{ env \"OUTPUT_FILE\" | default \"./bin/server\" }}"
+  INPUT_DIR: ./cmd/server
+  COMPOSE_FILE: ./deployment/compose.yaml
 
 tasks:
-  default:
+  build-bin:
+    env:
+      CGO_ENABLED: 0
+      GOARCH: "{{.TARGETARCH | default `amd64`}}"
+      GOEXPERIMENT: arenas
     cmds:
-      - echo "{{.GREETING}}"
+      - go build -o "{{.OUTPUT_FILE}}" "{{.INPUT_DIR}}"
     silent: true
+
+  generate:
+    cmds:
+      - mkdir -p ./gen
+      - protoc --go_out=./gen --go_opt=paths=source_relative --go-grpc_out=./gen --go-grpc_opt=paths=source_relative ./api/proto/*.proto
+      - go generate ./...
+
+  build:
+    cmds:
+      - docker buildx build --load -t snowflakeid_arena:latest -f ./deployment/Dockerfile .
+
+  run:
+    deps: [run-etcd]
+    cmds:
+      - docker run --env-file .env -p 5049:5051 snowflakeid_arena:latest
+
+  run-etcd:
+    cmds:
+      - docker compose -f ./deployment/compose.yaml up -d etcd
+  
+  run-compose:
+    cmds:
+      - docker compose -f ./deployment/compose.yaml up -d
+
+  test:
+    deps: [run]
+    cmds:
+      - go test -v ./...

@@ -1,10 +1,9 @@
 syntax = "proto3";
 
 package snowflakeid;
-import "api/proto/empty.proto";
 
 option go_package = "github.com/nifle3/goarenas-snowflakeClone/gen/grpc";
 
-service PingService {
-    rpc Ping(Empty) returns(Empty);
+message Empty {
+
 }

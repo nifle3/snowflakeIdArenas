@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package snwoflakeid;
 
+option go_package = "github.com/nifle3/goarenas-snowflakeClone/gen/grpc";
+
 service IdGeneratorService {
     rpc Generate(GenerateResponse) returns (GenerateRequest);
     rpc GenerateBatch(GenerateResponseBatch) returns(GenerateRequest);

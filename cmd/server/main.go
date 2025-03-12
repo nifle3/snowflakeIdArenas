@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func main() {
 	// cfg = config.MustNew()
 	// logger.MustInit()
@@ -7,4 +9,5 @@ func main() {
 	// machineID := etcd.GetMachineId()
 	// snowflakeService = snowFlake.NewService()
 
+	fmt.Println("hello world!")
 }
