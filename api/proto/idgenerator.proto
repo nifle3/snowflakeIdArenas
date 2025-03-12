@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package snwoflakeid;
+
+service IdGeneratorService {
+    rpc Generate(GenerateResponse) returns (GenerateRequest);
+    rpc GenerateBatch(GenerateResponseBatch) returns(GenerateRequest);
+}
+
+enum IdType {
+    text = 0;
+    base64 = 1;
+    binary = 2;
+}
+
+message GenerateResponse {
+    IdType format = 1;
+}
+
+message GenerateResponseBatch {
+    IdType format = 1;
+    int32 count = 2;
+}
+
+message GenerateRequest {
+
+}

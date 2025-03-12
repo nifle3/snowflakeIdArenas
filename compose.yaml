@@ -1,0 +1,46 @@
+x-server-node-template:
+  restart: always
+  build:
+    dockerfile: Dockerfile
+    context: .
+    target: final
+  networks:
+    - app_network
+
+services:
+  server_node1:
+    <<<: *x-server-node-template
+    container_name: server_node1
+    ports:
+      - 50052:50051
+
+  server_node2:
+    <<<: *x-server-node-template
+    container_name: server_node1
+    ports:
+      - 50053:50051
+
+  server_node3:
+    <<<: *x-server-node-template
+    container_name: server_node1
+    ports:
+      - 50054:50051
+
+  etcd:
+    container_name: etcd
+    networks:
+      - app_network
+
+  envoy:
+    container_name: envoy
+    image: envoyproxy/envoy:v1.73.7
+    networks:
+      - app_network
+    ports:
+      - "10000:10000"
+      - "9901:9901"
+    volumes:
+      - ./deployment/envoy.yaml:/etc/envoy/envoy.yaml:ro
+
+networks:
+  app_network:
