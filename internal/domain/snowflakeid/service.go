@@ -10,19 +10,19 @@ type Service interface {
 }
 
 type ServiceImplement struct {
-	generator Generator
+	generator *Generator
 }
 
-func NewService(generator Generator) *ServiceImplement {
+func NewService(generator *Generator) *ServiceImplement {
 	return &ServiceImplement{
 		generator: generator,
 	}
 }
 
-func (s ServiceImplement) Generate(_ context.Context, typeToGenerate TypeToGenerate) (Model, error) {
-	return Model{}, nil
+func (s *ServiceImplement) Generate(_ context.Context, typeToGenerate TypeToGenerate) (Model, error) {
+	return s.generator.Generate(typeToGenerate)
 }
 
-func (s ServiceImplement) GenerateBatch(_ context.Context, count int, typeToGenerate TypeToGenerate) ([]Model, error) {
+func (s *ServiceImplement) GenerateBatch(_ context.Context, count int, typeToGenerate TypeToGenerate) ([]Model, error) {
 	return nil, nil
 }

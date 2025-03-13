@@ -22,14 +22,24 @@ func NewIdGenerator(service snowflakeid.Service) *IdGenerator {
 
 func (ig IdGenerator) Generate(ctx context.Context, res *pb.GenerateResponse) (*pb.GenerateRequest, error) {
 	typeToGenerate := converters.FromGrpcTypeToDomain(res.Format)
-	ig.service.Generate(ctx, typeToGenerate)
-	return nil, nil
+	model, err := ig.service.Generate(ctx, typeToGenerate)
+	if err != nil {
+		return nil, err
+	}
+	req := &pb.GenerateRequest{
+		Format: res.Format,
+		Value: &pb.GenerateRequest_IdInt64{
+			IdInt64: model.Base,
+		},
+	}
+
+	return req, nil
 }
 
-func (ig IdGenerator) GenerateBatch(ctx context.Context, res *pb.GenerateResponseBatch) (*pb.GenerateRequest, error) {
+func (ig IdGenerator) GenerateBatch(ctx context.Context, res *pb.GenerateResponseBatch) (*pb.GenerateRequestBatch, error) {
 	typeToGenerate := converters.FromGrpcTypeToDomain(res.Format)
 
 	ig.service.GenerateBatch(ctx, int(res.Count), typeToGenerate)
 
-	return &pb.GenerateRequest{}, nil
+	return &pb.GenerateRequestBatch{}, nil
 }

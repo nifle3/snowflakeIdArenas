@@ -6,7 +6,7 @@ option go_package = "github.com/nifle3/goarenas-snowflakeClone/gen/grpc";
 
 service IdGeneratorService {
     rpc Generate(GenerateResponse) returns (GenerateRequest);
-    rpc GenerateBatch(GenerateResponseBatch) returns(GenerateRequest);
+    rpc GenerateBatch(GenerateResponseBatch) returns(GenerateRequestBatch);
 }
 
 enum IdType {
@@ -25,5 +25,14 @@ message GenerateResponseBatch {
 }
 
 message GenerateRequest {
+    IdType format = 1;
+    oneof value {
+        int64 id_int64 = 2;
+        string id_string = 3;
+        string id_base64 = 4;
+    };
+}
 
+message GenerateRequestBatch {
+    repeated GenerateRequest batch = 1;
 }
