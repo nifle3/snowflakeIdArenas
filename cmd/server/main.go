@@ -1,13 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"github.com/nifle3/goarenas-snowflakeClone/internal/config"
+	"github.com/nifle3/goarenas-snowflakeClone/internal/logger"
+	"github.com/nifle3/goarenas-snowflakeClone/internal/server"
+)
 
 func main() {
-	// cfg = config.MustNew()
-	// logger.MustInit()
-	// etcd := etcd.Register()
-	// machineID := etcd.GetMachineId()
-	// snowflakeService = snowFlake.NewService()
+	cfg := config.MustNew()
+	logger.MustSetup(cfg.EnvType)
 
-	fmt.Println("hello world!")
+	server.MustStart()
 }

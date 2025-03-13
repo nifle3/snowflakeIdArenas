@@ -23,16 +23,17 @@ tasks:
 
   build:
     cmds:
-      - docker buildx build --load -t snowflakeid_arena:latest -f ./deployment/Dockerfile .
+      - docker buildx build --target final --load -t snowflakeid_arena:latest -f ./deployment/Dockerfile .
 
   run:
+    desc: "Running a single container with app and etcd without envoy on port 5049"
     deps: [run-etcd]
     cmds:
-      - docker run --env-file .env -p 5049:5051 snowflakeid_arena:latest
+      - docker run --network deployment_backend --name snowflakegrpc --rm --env-file .env -p 5049:5051 snowflakeid_arena:latest
 
   run-etcd:
     cmds:
-      - docker compose -f ./deployment/compose.yaml up -d etcd
+      - docker compose -f ./deployment/compose.yaml up -d etcd_node1 etcd_node2 etcd_node3
   
   run-compose:
     cmds:
