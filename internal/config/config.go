@@ -9,13 +9,9 @@ import (
 type Etcd struct {
 }
 
-type Grpc struct {
-}
-
 type App struct {
 	EnvType string `env:"ENV-TYPE"`
 	Etcd
-	Grpc
 }
 
 func MustNew() *App {

@@ -24,7 +24,7 @@ func MustSetup(envType string) {
 		}))
 	case prod:
 		newLogger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level:     slog.LevelError,
+			Level:     slog.LevelInfo,
 			AddSource: true,
 		}))
 	default:

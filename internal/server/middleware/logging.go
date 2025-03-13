@@ -6,15 +6,9 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
-)
-
-var (
-	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
-	errMissingPeer     = status.Errorf(codes.InvalidArgument, "missing peer")
 )
 
 func Logging(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {

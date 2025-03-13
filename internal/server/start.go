@@ -6,12 +6,13 @@ import (
 	"net"
 
 	pb "github.com/nifle3/goarenas-snowflakeClone/gen/api/proto"
+	"github.com/nifle3/goarenas-snowflakeClone/internal/domain/snowflakeid"
 	"github.com/nifle3/goarenas-snowflakeClone/internal/server/handlers"
 	"github.com/nifle3/goarenas-snowflakeClone/internal/server/middleware"
 	"google.golang.org/grpc"
 )
 
-func MustStart() {
+func MustStart(service snowflakeid.Service) {
 	cfg := mustNewConfig()
 
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", cfg.Host, cfg.Port))
@@ -20,10 +21,12 @@ func MustStart() {
 		panic(fmt.Sprintf("Open port failed with %s\n", err.Error()))
 	}
 
-	server := grpc.NewServer(grpc.UnaryInterceptor(middleware.Logging))
+	server := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(middleware.Recovery, middleware.Logging),
+	)
 
 	pingHandler := handlers.NewPing()
-	idGeneratorHandler := handlers.NewIdGenerator()
+	idGeneratorHandler := handlers.NewIdGenerator(service)
 
 	pb.RegisterIdGeneratorServiceServer(server, idGeneratorHandler)
 	pb.RegisterPingServiceServer(server, pingHandler)
